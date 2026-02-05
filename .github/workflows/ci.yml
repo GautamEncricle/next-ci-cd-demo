@@ -31,10 +31,14 @@ jobs:
 
       - name: Deploy to Vercel
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "Deploying preview..."
-            npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }}
-          else
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "Deploying production..."
             npx vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            echo "Deploying staging..."
+            npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }} \
+              --alias next-ci-cd-demo-develop.vercel.app
+          else
+            echo "Deploying preview..."
+            npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }}
           fi
