@@ -32,8 +32,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "Deploying preview..."
-            npx vercel --token=${{ secrets.VERCEL_TOKEN }}
+            npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }}
           else
             echo "Deploying production..."
-            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+            npx vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
           fi
