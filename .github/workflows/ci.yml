@@ -1,12 +1,13 @@
-name: Next.js CI
+name: Next.js CI/CD
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +29,11 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel
-        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
-        with:
-          node-version: 20
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "Deploying preview..."
+            npx vercel --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            echo "Deploying production..."
+            npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+          fi
