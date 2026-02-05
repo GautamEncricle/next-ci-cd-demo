@@ -34,10 +34,16 @@ jobs:
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "Deploying production..."
             npx vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+
           elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
             echo "Deploying staging..."
-            npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }} \
-              --alias next-ci-cd-demo-develop.vercel.app
+
+            DEPLOY_URL=$(npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }})
+            echo "Deployment URL: $DEPLOY_URL"
+
+            npx vercel alias $DEPLOY_URL next-ci-cd-demo-develop.vercel.app \
+              --token=${{ secrets.VERCEL_TOKEN }}
+
           else
             echo "Deploying preview..."
             npx vercel --yes --token=${{ secrets.VERCEL_TOKEN }}
